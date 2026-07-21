@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optim // World Cup 2026 Arena</title>
+    
+    <style>
+        :root {
+            --bg-dark: #070A13;
+            --brand-neon: #00FFA3;
+            --brand-cyan: #00E5FF;
+            --text-main: #F3F4F6;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --danger-red: #FF3B30;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Setup Screen Overlay */
+        .setup-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #070A13;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .setup-box {
+            background: #0F1524;
+            border: 2px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-group.neon label { color: var(--brand-neon); }
+        .input-group.cyan label { color: var(--brand-cyan); }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            outline: none;
+        }
+        .input-group.neon input:focus { border-color: var(--brand-neon); }
+        .input-group.cyan input:focus { border-color: var(--brand-cyan); }
+
+        /* Top Header Bar */
+        .header-bar {
+            height: 80px;
+            background: #0F1524;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .brand-logo {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--brand-neon), var(--brand-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-tag {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #9CA3AF;
+            font-weight: 700;
+        }
+
+        /* Split Screen Core Container */
+        .split-arena {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            position: relative;
+        }
+
+        .center-divider {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--border-color);
+            z-index: 5;
+        }
+
+        .team-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 30px;
+            position: relative;
+            height: 100%;
+        }
+
+        .side-neon { background: rgba(0, 255, 163, 0.01); }
+        .side-cyan { background: rgba(0, 229, 255, 0.01); }
+
+        .track-header {
+            text-align: center;
+            width: 100%;
+        }
+
+        .team-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+        .text-neon { color: var(--brand-neon); text-shadow: 0 0 20px rgba(0, 255, 163, 0.2); }
+        .text-cyan { color: var(--brand-cyan); text-shadow: 0 0 20px rgba(0, 229, 255, 0.2); }
+
+        .score-display {
+            font-size: 22px;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin-bottom: 5px;
+        }
+
+        .timer-display {
+            font-size: 24px;
+            font-weight: 800;
+            color: #F3F4F6;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 5px;
+            min-width: 130px;
+        }
+        .timer-warning {
+            color: var(--danger-red);
+            background: rgba(255, 59, 48, 0.15);
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { opacity: 1; }
+            to { opacity: 0.6; }
+        }
+
+        /* Question Box Layout */
+        .question-canvas {
+            background: #0F1524;
+            border: 2px solid var(--border-color);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 450px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            margin: auto 0;
+        }
+
+        .question-text {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            line-height: 1.5;
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+        }
+
+        .question-category {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #9CA3AF;
+            margin-bottom: 8px;
+            font-weight: 800;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            width: 100%;
+        }
+
+        .opt-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            font-family: inherit;
+            color: var(--text-main);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+
+        .opt-btn:active { transform: scale(0.95); }
+        .side-neon .opt-btn:hover { border-color: var(--brand-neon); background: rgba(0, 255, 163, 0.05); }
+        .side-cyan .opt-btn:hover { border-color: var(--brand-cyan); background: rgba(0, 229, 255, 0.05); }
+
+        .relay-footer-hint {
+            font-size: 12px;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        /* Fullscreen Victory Modal overlay */
+        .victory-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #070A13;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .victory-title {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .btn-restart {
+            margin-top: 32px;
+            padding: 20px 40px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--brand-neon), var(--brand-cyan));
+            color: #070A13;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- STARTING REGISTRATION CONTAINER -->
+    <div class="setup-screen" id="setupWindow">
+        <div class="setup-box">
+            <h2 style="font-size: 28px; margin-bottom: 10px; font-weight:800; letter-spacing:-0.5px;">WORLD CUP 2026 ARENA</h2>
+            <p style="color: #9CA3AF; margin-bottom: 30px; font-size:14px;">15 Super Easy Questions • 30s Per Question • Penalty: -0.5</p>
+            
+            <div class="input-group neon">
+                <label>Team 1 Name</label>
+                <input type="text" id="inputNeon" value="Spain 🇪🇸">
+            </div>
+            
+            <div class="input-group cyan">
+                <label>Team 2 Name</label>
+                <input type="text" id="inputCyan" value="Argentina 🇦🇷">
+            </div>
+
+            <button class="btn-restart" style="margin-top:10px; width:100%;" onclick="launchGameEngine()">START KICKOFF ⚽</button>
+        </div>
+    </div>
+
+    <div class="header-bar">
+        <div class="brand-logo">optim</div>
+        <div class="brand-tag">World Cup 2026: Easy Trivia Quiz</div>
+    </div>
+
+    <div class="split-arena">
+        <div class="center-divider"></div>
+
+        <!-- LEFT SIDE: TEAM NEON -->
+        <div class="team-side side-neon">
+            <div class="track-header">
+                <div class="team-title text-neon" id="titleNeon">SPAIN 🇪🇸</div>
+                <div class="score-display" id="scoreNeon">Points: 0.0 | Q: 1/15</div>
+                <div class="timer-display" id="timerNeon">⏱️ 30.0s</div>
+            </div>
+
+            <div class="question-canvas">
+                <div class="question-category" id="qCatNeon">-</div>
+                <div class="question-text" id="qTextNeon">Loading...</div>
+                <div class="options-grid" id="optsNeon"></div>
+            </div>
+
+            <div class="relay-footer-hint">Answer & run to the back of the line!</div>
+        </div>
+
+        <!-- RIGHT SIDE: TEAM CYAN -->
+        <div class="team-side side-cyan">
+            <div class="track-header">
+                <div class="team-title text-cyan" id="titleCyan">ARGENTINA 🇦🇷</div>
+                <div class="score-display" id="scoreCyan">Points: 0.0 | Q: 1/15</div>
+                <div class="timer-display" id="timerCyan">⏱️ 30.0s</div>
+            </div>
+
+            <div class="question-canvas">
+                <div class="question-category" id="qCatCyan">-</div>
+                <div class="question-text" id="qTextCyan">Loading...</div>
+                <div class="options-grid" id="optsCyan"></div>
+            </div>
+
+            <div class="relay-footer-hint">Answer & run to the back of the line!</div>
+        </div>
+    </div>
+
+    <!-- Celebration Screen -->
+    <div class="victory-screen" id="victoryWindow">
+        <div style="font-size: 80px; margin-bottom: 10px;" id="victoryEmoji">⚽🏆⚽</div>
+        <div class="victory-title" id="winnerBanner">TEAM WINS</div>
+        <p style="color: #9CA3AF; font-size: 18px; line-height: 1.6;" id="victoryDesc">Match complete.</p>
+        <button class="btn-restart" onclick="window.location.reload()">Play Rematch</button>
+    </div>
+
+    <script>
+        let audioCtx = null;
+
+        function playSound(type) {
+            if (!audioCtx) {
+                try {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                } catch(e) { return; }
+            }
+            if (!audioCtx || audioCtx.state === 'suspended') return;
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now); 
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); 
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.linearRampToValueAtTime(120, now + 0.2);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            } else if (type === 'victory') {
+                const notes = [523.25, 659.25, 783.99, 1046.50]; 
+                notes.forEach((freq, index) => {
+                    const noteOsc = audioCtx.createOscillator();
+                    const noteGain = audioCtx.createGain();
+                    noteOsc.connect(noteGain);
+                    noteGain.connect(audioCtx.destination);
+                    noteOsc.type = 'triangle';
+                    noteOsc.frequency.setValueAtTime(freq, now + (index * 0.1));
+                    noteGain.gain.setValueAtTime(0.12, now + (index * 0.1));
+                    noteGain.gain.exponentialRampToValueAtTime(0.01, now + (index * 0.1) + 0.4);
+                    noteOsc.start(now + (index * 0.1));
+                    noteOsc.stop(now + (index * 0.1) + 0.4);
+                });
+            }
+        }
+
+        // Simplified & Easy World Cup 2026 Question Pool (15 Questions)
+        const questionPool = [
+            { cat: "FOOTBALL BASICS", q: "How many players from one team are on the pitch during a match?", a: "11", opts: ["9", "10", "11", "12"] },
+            { cat: "WORLD CUP HOSTS", q: "Which of these countries is one of the co-hosts for World Cup 2026?", a: "United States", opts: ["United States", "Brazil", "Germany", "Japan"] },
+            { cat: "WORLD CUP BASICS", q: "How often is the FIFA World Cup tournament held?", a: "Every 4 years", opts: ["Every year", "Every 2 years", "Every 4 years", "Every 5 years"] },
+            { cat: "ARGENTINA LEGEND", q: "Which famous number 10 led Argentina to win the 2022 World Cup?", a: "Lionel Messi", opts: ["Cristiano Ronaldo", "Lionel Messi", "Neymar Jr", "Kylian Mbappé"] },
+            { cat: "SPAIN COLORS", q: "What is the main jersey color of the Spain national team?", a: "Red", opts: ["Blue", "Yellow", "Red", "Green"] },
+            { cat: "ARGENTINA COLORS", q: "What colors are featured on Argentina's iconic home jersey?", a: "Sky Blue & White", opts: ["Red & Yellow", "Sky Blue & White", "Black & Gold", "Green & White"] },
+            { cat: "WORLD CUP GOAL", q: "What body part are outfield players NOT allowed to use to touch the ball?", a: "Hands & Arms", opts: ["Head", "Chest", "Feet", "Hands & Arms"] },
+            { cat: "SPAIN WONDERKID", q: "Which teenage star wears shirt #19 for Spain?", a: "Lamine Yamal", opts: ["Lamine Yamal", "Pedri", "Gavi", "Rodri"] },
+            { cat: "WORLD CUP TROPHY", q: "What precious metal is the official FIFA World Cup Trophy made of?", a: "Gold", opts: ["Silver", "Gold", "Bronze", "Platinum"] },
+            { cat: "GOALKEEPER ROLE", q: "Which player on the field is allowed to use their hands inside their penalty area?", a: "Goalkeeper", opts: ["Defender", "Midfielder", "Goalkeeper", "Striker"] },
+            { cat: "MATCH DURATION", q: "How long is a standard football match without extra time?", a: "90 minutes", opts: ["60 minutes", "80 minutes", "90 minutes", "100 minutes"] },
+            { cat: "CARD RULES", q: "What color card does a referee show to immediately expel a player from the game?", a: "Red Card", opts: ["Yellow Card", "Red Card", "Green Card", "Blue Card"] },
+            { cat: "DEFENDING CHAMPIONS", q: "Which country won the previous FIFA World Cup held in Qatar in 2022?", a: "Argentina", opts: ["France", "Spain", "Argentina", "Croatia"] },
+            { cat: "PENALTY KICK", q: "How many players face each other during a penalty kick shootout attempt?", a: "1 Kicker & 1 Goalkeeper", opts: ["1 Kicker & 1 Goalkeeper", "2 Kickers", "Full Teams", "3 Defenders"] },
+            { cat: "TOURNAMENT EXTRA", q: "What restart is given when the ball completely crosses the sideline boundary?", a: "Throw-in", opts: ["Corner Kick", "Throw-in", "Free Kick", "Penalty Kick"] }
+        ];
+
+        const TOTAL_QUESTIONS = 15;
+        const QUESTION_TIME_LIMIT = 30;
+
+        let stateNeon = { name: "Spain 🇪🇸", currentIdx: 0, score: 0, totalTimeUsed: 0, deck: [], questionStartTime: 0, finished: false };
+        let stateCyan = { name: "Argentina 🇦🇷", currentIdx: 0, score: 0, totalTimeUsed: 0, deck: [], questionStartTime: 0, finished: false };
+        
+        let globalIntervalId = null;
+
+        function shuffle(arr) {
+            return arr.sort(() => Math.random() - 0.5);
+        }
+
+        function launchGameEngine() {
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            } catch(e) {}
+
+            const nameNeon = document.getElementById("inputNeon").value.trim();
+            const nameCyan = document.getElementById("inputCyan").value.trim();
+
+            if (nameNeon) stateNeon.name = nameNeon;
+            if (nameCyan) stateCyan.name = nameCyan;
+
+            document.getElementById("titleNeon").textContent = stateNeon.name;
+            document.getElementById("titleCyan").textContent = stateCyan.name;
+
+            document.getElementById("setupWindow").style.display = "none";
+
+            stateNeon.deck = shuffle([...questionPool]).slice(0, TOTAL_QUESTIONS);
+            stateCyan.deck = shuffle([...questionPool]).slice(0, TOTAL_QUESTIONS);
+
+            stateNeon.questionStartTime = Date.now();
+            stateCyan.questionStartTime = Date.now();
+
+            renderQuestion('Neon');
+            renderQuestion('Cyan');
+            
+            globalIntervalId = setInterval(processLiveTimers, 100);
+        }
+
+        function processLiveTimers() {
+            const now = Date.now();
+
+            if (!stateNeon.finished) {
+                let elapsed = (now - stateNeon.questionStartTime) / 1000;
+                let remaining = Math.max(0, QUESTION_TIME_LIMIT - elapsed);
+                
+                const timerEl = document.getElementById('timerNeon');
+                timerEl.textContent = `⏱️ ${remaining.toFixed(1)}s`;
+                
+                if (remaining <= 5) {
+                    timerEl.classList.add('timer-warning');
+                } else {
+                    timerEl.classList.remove('timer-warning');
+                }
+
+                if (remaining <= 0) {
+                    handleTimeout('Neon');
+                }
+            }
+
+            if (!stateCyan.finished) {
+                let elapsed = (now - stateCyan.questionStartTime) / 1000;
+                let remaining = Math.max(0, QUESTION_TIME_LIMIT - elapsed);
+                
+                const timerEl = document.getElementById('timerCyan');
+                timerEl.textContent = `⏱️ ${remaining.toFixed(1)}s`;
+                
+                if (remaining <= 5) {
+                    timerEl.classList.add('timer-warning');
+                } else {
+                    timerEl.classList.remove('timer-warning');
+                }
+
+                if (remaining <= 0) {
+                    handleTimeout('Cyan');
+                }
+            }
+        }
+
+        function handleTimeout(team) {
+            const state = (team === 'Neon') ? stateNeon : stateCyan;
+            
+            state.score -= 0.5; 
+            state.totalTimeUsed += QUESTION_TIME_LIMIT;
+            playSound('wrong');
+
+            state.currentIdx++;
+            state.questionStartTime = Date.now();
+            
+            if (state.currentIdx >= TOTAL_QUESTIONS) {
+                completeTeamTrack(team);
+            } else {
+                renderQuestion(team);
+            }
+        }
+
+        function renderQuestion(team) {
+            const state = (team === 'Neon') ? stateNeon : stateCyan;
+            
+            document.getElementById(`score${team}`).textContent = `Points: ${state.score.toFixed(1)} | Q: ${state.currentIdx + 1}/${TOTAL_QUESTIONS}`;
+
+            const currentQuestion = state.deck[state.currentIdx];
+            
+            document.getElementById(`qCat${team}`).textContent = currentQuestion.cat;
+            const txtElement = document.getElementById(`qText${team}`);
+            const gridElement = document.getElementById(`opts${team}`);
+            
+            txtElement.textContent = currentQuestion.q;
+            gridElement.innerHTML = ""; 
+
+            currentQuestion.opts.forEach(option => {
+                const btn = document.createElement("button");
+                btn.className = "opt-btn";
+                btn.textContent = option;
+                
+                btn.addEventListener("click", () => {
+                    if (state.finished) return;
+
+                    const timeSpentOnQuestion = (Date.now() - state.questionStartTime) / 1000;
+                    state.totalTimeUsed += timeSpentOnQuestion;
+
+                    if (option === currentQuestion.a) {
+                        state.score += 1.0;
+                        playSound('correct');
+                    } else {
+                        state.score -= 0.5; 
+                        playSound('wrong');
+                    }
+                    
+                    state.currentIdx++;
+                    state.questionStartTime = Date.now();
+                    
+                    if (state.currentIdx >= TOTAL_QUESTIONS) {
+                        completeTeamTrack(team);
+                    } else {
+                        renderQuestion(team);
+                    }
+                });
+
+                gridElement.appendChild(btn);
+            });
+        }
+
+        function completeTeamTrack(team) {
+            const state = (team === 'Neon') ? stateNeon : stateCyan;
+            state.finished = true;
+            
+            document.getElementById(`timer${team}`).textContent = "FINISHED";
+            document.getElementById(`timer${team}`).classList.remove('timer-warning');
+            document.getElementById(`score${team}`).textContent = `Points: ${state.score.toFixed(1)} | Done`;
+            
+            document.getElementById(`qCat${team}`).textContent = "MATCH COMPLETE";
+            document.getElementById(`qText${team}`).textContent = "Waiting for opponents to cross line...";
+            document.getElementById(`opts${team}`).innerHTML = "";
+
+            if (stateNeon.finished && stateCyan.finished) {
+                clearInterval(globalIntervalId);
+                evaluateWinner();
+            }
+        }
+
+        function evaluateWinner() {
+            playSound('victory');
+
+            const windowOverlay = document.getElementById("victoryWindow");
+            const textBanner = document.getElementById("winnerBanner");
+            const emojiBanner = document.getElementById("victoryEmoji");
+            const descBanner = document.getElementById("victoryDesc");
+            
+            let ultimateWinner = "";
+            let winReason = "";
+
+            if (stateNeon.score > stateCyan.score) {
+                ultimateWinner = "Neon";
+                winReason = "Higher overall accuracy score!";
+            } else if (stateCyan.score > stateNeon.score) {
+                ultimateWinner = "Cyan";
+                winReason = "Higher overall accuracy score!";
+            } else {
+                if (stateNeon.totalTimeUsed < stateCyan.totalTimeUsed) {
+                    ultimateWinner = "Neon";
+                    winReason = "Tie broken! Answered World Cup questions faster!";
+                } else if (stateCyan.totalTimeUsed < stateNeon.totalTimeUsed) {
+                    ultimateWinner = "Cyan";
+                    winReason = "Tie broken! Answered World Cup questions faster!";
+                } else {
+                    ultimateWinner = "Draw";
+                    winReason = "Perfect timing match!";
+                }
+            }
+
+            if (ultimateWinner === "Neon") {
+                textBanner.textContent = `${stateNeon.name} WINS!`;
+                textBanner.style.color = "var(--brand-neon)";
+                emojiBanner.textContent = "🏆🇪🇸⚡";
+            } else if (ultimateWinner === "Cyan") {
+                textBanner.textContent = `${stateCyan.name} WINS!`;
+                textBanner.style.color = "var(--brand-cyan)";
+                emojiBanner.textContent = "🏆🇦🇷⚡";
+            } else {
+                textBanner.textContent = "IT'S A DRAW!";
+                textBanner.style.color = "#FFFFFF";
+                emojiBanner.textContent = "🤝⚽🤝";
+            }
+
+            descBanner.innerHTML = `
+                <strong>${winReason}</strong><br><br>
+                <strong>${stateNeon.name}:</strong> ${stateNeon.score.toFixed(1)} Pts (${stateNeon.totalTimeUsed.toFixed(2)}s)<br>
+                <strong>${stateCyan.name}:</strong> ${stateCyan.score.toFixed(1)} Pts (${stateCyan.totalTimeUsed.toFixed(2)}s)
+            `;
+            windowOverlay.style.display = "flex";
+        }
+    </script>
+</body>
+</html>
