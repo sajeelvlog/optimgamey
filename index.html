@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optim // World Cup 2026 Arena</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- STARTING REGISTRATION CONTAINER -->
+    <div class="setup-screen" id="setupWindow">
+        <div class="setup-box">
+            <h2 style="font-size: 28px; margin-bottom: 10px; font-weight:800; letter-spacing:-0.5px;">WORLD CUP 2026 ARENA</h2>
+            <p style="color: #9CA3AF; margin-bottom: 30px; font-size:14px;">15 Super Easy Questions • 30s Per Question • Penalty: -0.5</p>
+            
+            <div class="input-group neon">
+                <label>Team 1 Name</label>
+                <input type="text" id="inputNeon" value="Spain 🇪🇸">
+            </div>
+            
+            <div class="input-group cyan">
+                <label>Team 2 Name</label>
+                <input type="text" id="inputCyan" value="Argentina 🇦🇷">
+            </div>
+
+            <button class="btn-restart" style="margin-top:10px; width:100%;" onclick="launchGameEngine()">START KICKOFF ⚽</button>
+        </div>
+    </div>
+
+    <div class="header-bar">
+        <div class="brand-logo">optim</div>
+        <div class="brand-tag">World Cup 2026: Easy Trivia Quiz</div>
+    </div>
+
+    <div class="split-arena">
+        <div class="center-divider"></div>
+
+        <!-- LEFT SIDE: TEAM NEON -->
+        <div class="team-side side-neon">
+            <div class="track-header">
+                <div class="team-title text-neon" id="titleNeon">SPAIN 🇪🇸</div>
+                <div class="score-display" id="scoreNeon">Points: 0.0 | Q: 1/15</div>
+                <div class="timer-display" id="timerNeon">⏱️ 30.0s</div>
+            </div>
+
+            <div class="question-canvas">
+                <div class="question-category" id="qCatNeon">-</div>
+                <div class="question-text" id="qTextNeon">Loading...</div>
+                <div class="options-grid" id="optsNeon"></div>
+            </div>
+
+            <div class="relay-footer-hint">Answer & run to the back of the line!</div>
+        </div>
+
+        <!-- RIGHT SIDE: TEAM CYAN -->
+        <div class="team-side side-cyan">
+            <div class="track-header">
+                <div class="team-title text-cyan" id="titleCyan">ARGENTINA 🇦🇷</div>
+                <div class="score-display" id="scoreCyan">Points: 0.0 | Q: 1/15</div>
+                <div class="timer-display" id="timerCyan">⏱️ 30.0s</div>
+            </div>
+
+            <div class="question-canvas">
+                <div class="question-category" id="qCatCyan">-</div>
+                <div class="question-text" id="qTextCyan">Loading...</div>
+                <div class="options-grid" id="optsCyan"></div>
+            </div>
+
+            <div class="relay-footer-hint">Answer & run to the back of the line!</div>
+        </div>
+    </div>
+
+    <!-- Celebration Screen -->
+    <div class="victory-screen" id="victoryWindow">
+        <div style="font-size: 80px; margin-bottom: 10px;" id="victoryEmoji">⚽🏆⚽</div>
+        <div class="victory-title" id="winnerBanner">TEAM WINS</div>
+        <p style="color: #9CA3AF; font-size: 18px; line-height: 1.6;" id="victoryDesc">Match complete.</p>
+        <button class="btn-restart" onclick="window.location.reload()">Play Rematch</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

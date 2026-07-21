@@ -1,0 +1,286 @@
+:root {
+    --bg-dark: #070A13;
+    --brand-neon: #00FFA3;
+    --brand-cyan: #00E5FF;
+    --text-main: #F3F4F6;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --danger-red: #FF3B30;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Setup Screen Overlay */
+.setup-screen {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #070A13;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.setup-box {
+    background: #0F1524;
+    border: 2px solid var(--border-color);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.input-group {
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.input-group.neon label { color: var(--brand-neon); }
+.input-group.cyan label { color: var(--brand-cyan); }
+
+.input-group input {
+    width: 100%;
+    padding: 16px;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    outline: none;
+}
+.input-group.neon input:focus { border-color: var(--brand-neon); }
+.input-group.cyan input:focus { border-color: var(--brand-cyan); }
+
+/* Top Header Bar */
+.header-bar {
+    height: 80px;
+    background: #0F1524;
+    border-bottom: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.brand-logo {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, var(--brand-neon), var(--brand-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.brand-tag {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #9CA3AF;
+    font-weight: 700;
+}
+
+/* Split Screen Core Container */
+.split-arena {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    position: relative;
+}
+
+.center-divider {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--border-color);
+    z-index: 5;
+}
+
+.team-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 30px;
+    position: relative;
+    height: 100%;
+}
+
+.side-neon { background: rgba(0, 255, 163, 0.01); }
+.side-cyan { background: rgba(0, 229, 255, 0.01); }
+
+.track-header {
+    text-align: center;
+    width: 100%;
+}
+
+.team-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+}
+.text-neon { color: var(--brand-neon); text-shadow: 0 0 20px rgba(0, 255, 163, 0.2); }
+.text-cyan { color: var(--brand-cyan); text-shadow: 0 0 20px rgba(0, 229, 255, 0.2); }
+
+.score-display {
+    font-size: 22px;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-bottom: 5px;
+}
+
+.timer-display {
+    font-size: 24px;
+    font-weight: 800;
+    color: #F3F4F6;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px 16px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-top: 5px;
+    min-width: 130px;
+}
+.timer-warning {
+    color: var(--danger-red);
+    background: rgba(255, 59, 48, 0.15);
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    from { opacity: 1; }
+    to { opacity: 0.6; }
+}
+
+/* Question Box Layout */
+.question-canvas {
+    background: #0F1524;
+    border: 2px solid var(--border-color);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 450px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    margin: auto 0;
+}
+
+.question-text {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    line-height: 1.5;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+}
+
+.question-category {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #9CA3AF;
+    margin-bottom: 8px;
+    font-weight: 800;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    width: 100%;
+}
+
+.opt-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    padding: 16px;
+    font-family: inherit;
+    color: var(--text-main);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.1s ease;
+}
+
+.opt-btn:active { transform: scale(0.95); }
+.side-neon .opt-btn:hover { border-color: var(--brand-neon); background: rgba(0, 255, 163, 0.05); }
+.side-cyan .opt-btn:hover { border-color: var(--brand-cyan); background: rgba(0, 229, 255, 0.05); }
+
+.relay-footer-hint {
+    font-size: 12px;
+    color: #6B7280;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+/* Fullscreen Victory Modal overlay */
+.victory-screen {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #070A13;
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.victory-title {
+    font-size: 56px;
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+.btn-restart {
+    margin-top: 32px;
+    padding: 20px 40px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--brand-neon), var(--brand-cyan));
+    color: #070A13;
+}
